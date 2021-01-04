@@ -1,27 +1,7 @@
 # AngularBuildpacks
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.0.5.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.0.5. It was subsequently customized to be supported by the [Paketo Buildpacks](https://paketo.io/). Namely, these modifications which you can also see in the last commit:
 
-## Development server
-
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+* In the [package.json](package.json), the `postinstall` script was added to run the [postInstall.sh](postInstall.sh) script. The script checks the existance of the Angular CLI in the node_modules. This is supposed to be missing because buildpacks runs `npm ci` in `NODE_ENV=production` mode which causes devDependencies to be skipped. The script therefore runs `npm ci` in non-production mode to load all dependencies. The script then runs `npm run build`. The `build` script itself was slightly modified with the addition of the [`--prod` flag](https://angular.io/cli/build) to create an optimized build. NOTE: this is all not ideal because now too many files are packages. Ideal would be to package only the `dist` directory and everything needed for the `serve` package. There are ways to reach this, but require so many hacks that one better writes a Dockerfile.
+* In the [package.json](package.json), the `start` script was renamed to `dev`. This causes the [npm-start](https://github.com/paketo-buildpacks/npm-start) not to run `ng serve`.
+* In the [package.json](package.json), a new `start` script was added that uses [`serve`](https://www.npmjs.com/package/serve) to serve the compiled resources. The `-l 8080` argument defines the port number. The `-s` option defines that a single-page application is served and unknown requests are to be handled by the index.html.
