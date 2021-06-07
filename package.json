@@ -3,10 +3,12 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
+    "dev": "ng serve",
+    "build": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "postinstall": "./postInstall.sh",
+    "start": "serve -s -l 8080 dist/angular-buildpacks"
   },
   "private": true,
   "dependencies": {
@@ -19,6 +21,7 @@
     "@angular/platform-browser-dynamic": "~12.0.3",
     "@angular/router": "~12.0.3",
     "rxjs": "~6.6.0",
+    "serve": "^11.3.2",
     "tslib": "^2.1.0",
     "zone.js": "~0.11.4"
   },
